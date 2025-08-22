@@ -81,10 +81,8 @@ const MAX_X_AXIS = 30000
 const MAX_Y_AXIS = 20000
 const RANGE_Y_AXIS = MAX_Y_AXIS - MIN_Y_AXIS
 
-const SVG_TEMPLATE = `<?xml version="1.0" encoding="UTF-8"?>
- <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
- <svg width="350mm" height="220mm" viewBox="0 0 35000 22000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" stroke-width="28.222" stroke-linejoin="round" xml:space="preserve">
-          <style>
+const SVG_TEMPLATE = `<svg viewBox="0 0 32000 22000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" stroke-width="28.222" stroke-linejoin="round" xml:space="preserve">
+  <style>
     line {
       stroke: black;
     }
@@ -96,11 +94,6 @@ const SVG_TEMPLATE = `<?xml version="1.0" encoding="UTF-8"?>
  <path fill="rgb(254,254,123)" stroke="none" d="M 0,%d L 7500,%d 15000,%d 22500,%d 30000,%d 30000,20000 0,20000 0,%d Z "/>
 
  <path fill="rgb(19,174,0)" stroke="none" d="M 0,%d L 7500,%d 15000,%d 22500,%d, 30000,%d 30000,20000 0,20000 0,%d Z "/>
-
-
- <!-- <path fill="rgb(255,134,134)" stroke="none" d="M 1751,606 L 29094,606 29094,13393 1751,1186 1751,606 Z "/>
- <path fill="rgb(254,254,123)" stroke="none" d="M 1751,1186 L 29094,13393 29094,17268 1751,12207 1751,1186 Z "/>
- <path fill="rgb(19,174,0)" stroke="none" d="M 1751,12207 L 29094,17268 29094,19981 1751,19981 1751,12207 Z "/> -->
 
  <text class="SVGTextShape"><tspan class="TextParagraph"><tspan class="TextPosition" x="0" y="20549"><tspan font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400" fill="rgb(0,0,0)" stroke="none" style="white-space: pre">%s</tspan></tspan></tspan></text>
  <text class="SVGTextShape"><tspan class="TextParagraph"><tspan class="TextPosition" x="7500" y="20549"><tspan font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400" fill="rgb(0,0,0)" stroke="none" style="white-space: pre">%s</tspan></tspan></tspan></text>
@@ -140,15 +133,44 @@ const SVG_TEMPLATE = `<?xml version="1.0" encoding="UTF-8"?>
  </svg>`
 
 const getTemplate = `
+<!doctype html>
 <html>
-<form action="" method="post">
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+    .container {
+      display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        font: 1em "Liberation Sans", sans-serif;
+    }
+    .form-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+        font: 1.2em "Liberation Sans", sans-serif;
+    }
+    .svg-container {
+        display: inline-block;
+        position: relative;
+        width: 75%%;
+        vertical-align: middle;
+        overflow: hidden;
+    }
+    button, input, select, textarea {
+        font: inherit;
+    }
+</style>
+</head>
+<body class="container">
+<form class="form-container" action="" method="post">
   <div>
-    <label for="name">Target Radius (meters)</label>
+    <label for="name">Target Radius (meters):</label>
     <input type="number" name="targetRadius" id="name" value=%.1f step=0.1 required />
   </div>
   <div>
-  <label for="weapon-select">Choose a Gun and a Shell:</label>
-<select name="weapon" id="weapon-select">
+  <label for="weapon-select">Gun and Shell:</label>
+  <select name="weapon" id="weapon-select">
   <option value="cremari-he-0">Cremari with HE shell</option>
   <option value="cremari-shrapnel-1">Cremari with Shrapnel shell</option>
   <option value="cremari-incendiary-2">Cremari with Incendiary shell</option>
@@ -164,16 +186,19 @@ const getTemplate = `
   <option value="tempestcannon-300mm-12">Tempest Cannon with 300mm shell</option>
   <option value="squire-explosive-13">Squire RAC with Explosive rocket</option>
   <option value="skycaller-fire-14">Skycaller with Fire rocket</option>
-</select>
+  </select>
   </div>
   <div>
-    <input type="submit" value="Generate chart" />
+    <input type="submit" value="Plot chart" />
   </div>
 </form>
+<div class=svg-container>
 %s
+</div>
 <script type="text/javascript" >
 document.getElementById("weapon-select").selectedIndex = %s
 </script>
+</body>
 </html>
 `
 
