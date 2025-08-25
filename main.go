@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-type Weapon struct {
+type Platform struct {
 	minRange            float64
 	maxRange            float64
 	minDispersionRadius float64
@@ -19,27 +19,41 @@ type Weapon struct {
 	name                string
 }
 
-type Shell struct {
+type Ammo struct {
 	fullDamageRadius    float64
 	partialDamageRadius float64
 	name                string
 }
 
-// Weapons
+// Platforms
 
-var Cremari = Weapon{45.0, 80.0, 5.5, 12, "Cremari Mortar"}
-var GunboatMortar = Weapon{75.0, 100.0, 2.5, 14.5, "Gunboat Mortar"}
-var HuberLariat = Weapon{100.0, 300.0, 25.0, 35.0, "Huber Lariat"}
-var Koronides = Weapon{100.0, 250.0, 22.5, 30.0, "Koronides"}
-var HuberExalt = Weapon{100.0, 300.0, 25.0, 35.0, "Huber Exalt"}
-var StormCannon = Weapon{400.0, 1000.0, 50.0, 50.0, "Storm Cannon"}
-var TempestCannon = Weapon{350.0, 500.0, 50.0, 50.0, "Tempest Cannon"}
-var Conqueror = Weapon{100.0, 200.0, 2.5, 8.5, "Conqueror DD"}
-var Blacksteele = Weapon{100.0, 200.0, 2.5, 8.5, "Blacksteele FF"}
-var Squire = Weapon{375.0, 500.0, 39, 51, "Squire RAC"}
-var Skycaller = Weapon{275.0, 350.0, 37.5, 60, "Skycaller"}
+var Cremari = Platform{45.0, 80.0, 5.5, 12, "Cremari Mortar"}
+var GunboatMortar = Platform{75.0, 100.0, 2.5, 14.5, "Gunboat Mortar"}
+var HuberLariat = Platform{100.0, 300.0, 25.0, 35.0, "Huber Lariat"}
+var Koronides = Platform{100.0, 250.0, 22.5, 30.0, "Koronides"}
+var HuberExalt = Platform{100.0, 300.0, 25.0, 35.0, "Huber Exalt"}
+var Thunderbolt = Platform{200.0, 350.0, 32.5, 40.0, "Thunderbolt"}
+var StormCannon = Platform{400.0, 1000.0, 50.0, 50.0, "Storm Cannon"}
+var TempestCannon = Platform{350.0, 500.0, 50.0, 50.0, "Tempest Cannon"}
+var Conqueror = Platform{100.0, 200.0, 2.5, 8.5, "Conqueror"}
+var Blacksteele = Platform{100.0, 200.0, 2.5, 8.5, "Blacksteele"}
+var DevittCaine = Platform{45.0, 80.0, 2.5, 9.45, "Devitt-Caine"}
+var Peltast = Platform{45.0, 80.0, 2.5, 9.45, "Peltast"}
+var Skycaller = Platform{275.0, 350.0, 37.5, 60.0, "Skycaller"}
+var Deioneus = Platform{350.0, 400.0, 41.5, 57.5, "Deioneus"}
+var WaspNest = Platform{375.0, 450.0, 37.5, 60.0, "WaspNest"}
+var Squire = Platform{375.0, 500.0, 39, 51, "Squire"}
+var Hades = Platform{300.0, 575.0, 35, 52, "Hades"}
+var Retiarius = Platform{375.0, 500.0, 37.5, 51, "Retiarius"}
+var Trident = Platform{100.0, 225.0, 2.5, 8.5, "Trident"}
+var Titan120 = Platform{100.0, 200.0, 2.5, 8.5, "Titan"}
+var Callahan120 = Platform{100.0, 200.0, 2.5, 8.5, "Callahan"}
+var Titan150 = Platform{100.0, 225.0, 2.5, 8.5, "Titan"}
+var Callahan150 = Platform{100.0, 225.0, 2.5, 8.5, "Callahan"}
+var Flood = Platform{120.0, 250.0, 25, 35, "Flood"}
+var Sarissa = Platform{120.0, 250.0, 25, 35, "Sarissa"}
 
-var Weapons = map[string]Weapon{
+var Platforms = map[string]Platform{
 	"cremari":       Cremari,
 	"gunboat":       GunboatMortar,
 	"huberlariat":   HuberLariat,
@@ -49,22 +63,36 @@ var Weapons = map[string]Weapon{
 	"tempestcannon": TempestCannon,
 	"conqueror":     Conqueror,
 	"blacksteele":   Blacksteele,
-	"squire":        Squire,
 	"skycaller":     Skycaller,
+	"devittcaine":   DevittCaine,
+	"peltast":       Peltast,
+	"deioneus":      Deioneus,
+	"waspnest":      WaspNest,
+	"squire":        Squire,
+	"hades":         Hades,
+	"retiarius":     Retiarius,
+	"thunderbolt":   Thunderbolt,
+	"callahan120":   Callahan120,
+	"callahan150":   Callahan150,
+	"titan120":      Titan120,
+	"titan150":      Titan150,
+	"trident":       Trident,
+	"flood":         Flood,
+	"sarissa":       Sarissa,
 }
 
-// Shells
+// Ammos
 
-var HEMortarShell = Shell{2.5, 5.0, "HE Mortar Shell"}
-var ShrapnelMortarShell = Shell{4.5, 7.5, "Shrapnel Mortar Shell"}
-var IncendiaryMortarShell = Shell{2.25, 5.5, "Incendiary Mortar Shell"}
-var _120mmShell = Shell{4.0, 11.25, "120mm Shell"}
-var _150mmShell = Shell{7.0, 11.25, "150mm Shell"}
-var _300mmShell = Shell{4.5, 15.0, "300mm Shell"}
-var ExplosiveRocket = Shell{2.25, 5.5, "High Explosive Rocket"}
-var FireRocket = Shell{2.25, 5.5, "High Explosive Rocket"}
+var HEMortarShell = Ammo{2.5, 5.0, "HE Mortar Shell"}
+var ShrapnelMortarShell = Ammo{4.5, 7.5, "Shrapnel Mortar Shell"}
+var IncendiaryMortarShell = Ammo{2.25, 5.5, "Incendiary Mortar Shell"}
+var _120mmShell = Ammo{4.0, 11.25, "120mm Shell"}
+var _150mmShell = Ammo{7.0, 11.25, "150mm Shell"}
+var _300mmShell = Ammo{4.5, 15.0, "300mm Shell"}
+var ExplosiveRocket = Ammo{2.25, 5.5, "High Explosive Rocket"}
+var FireRocket = Ammo{2.25, 5.5, "Fire Rocket"}
 
-var Shells = map[string]Shell{
+var Ammos = map[string]Ammo{
 	"he":         HEMortarShell,
 	"shrapnel":   ShrapnelMortarShell,
 	"incendiary": IncendiaryMortarShell,
@@ -75,19 +103,17 @@ var Shells = map[string]Shell{
 	"fire":       FireRocket,
 }
 
-const MIN_X_AXIS = 0
-const MIN_Y_AXIS = 0
-const MAX_X_AXIS = 30000
-const MAX_Y_AXIS = 20000
-const RANGE_Y_AXIS = MAX_Y_AXIS - MIN_Y_AXIS
+const MinYAxis = 0
+const MaxYAxis = 20000
+const RangeYAxis = MaxYAxis - MinYAxis
 
-const SVG_TEMPLATE = `<svg viewBox="0 0 32000 22000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" stroke-width="28.222" stroke-linejoin="round" xml:space="preserve">
+const SVGTemplate = `<svg viewBox="0 0 32000 22000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" stroke-width="28.222" stroke-linejoin="round" xml:space="preserve">
   <style>
     line {
       stroke: black;
     }
   </style>
- <path fill="rgb(255,255,255)" stroke="none" d="M 0,0 L 35000,0 35000,25000 0,25000 0,0"/>
+ <path fill="rgb(255,255,255)" stroke="none" d="M 0,0 L 32000,0 32000,22000 0,22000 0,0"/>
 
  <path fill="rgb(255,134,134)" stroke="none" d="M 0,0 L 30000,0 30000,20000 0,20000 0,0 Z "/>
 
@@ -132,66 +158,107 @@ const SVG_TEMPLATE = `<svg viewBox="0 0 32000 22000" version="1.1" xmlns="http:/
  <text class="SVGTextShape"><tspan class="TextParagraph"><tspan class="TextPosition" x="13000" y="21500"><tspan font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400" fill="rgb(0,0,0)" stroke="none" style="white-space: pre">%s</tspan></tspan></tspan></text>
  </svg>`
 
-const getTemplate = `
+const HTMLTemplate = `
 <!doctype html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
     .container {
-      display: grid;
-        grid-template-columns: 1fr;
-        gap: 20px;
-        font: 1em "Liberation Sans", sans-serif;
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 20px;
+	font: 1em "Liberation Sans", sans-serif;
     }
     .form-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 20px;
-        font: 1.2em "Liberation Sans", sans-serif;
+	display: grid;
+	justify-content: center;
+	grid-template-columns: 1fr 1fr 1fr;
+	font: 1.2em "Liberation Sans", sans-serif;
+    }
+    .form-center {
+	justify-content:center;
+	display: grid;
     }
     .svg-container {
-        display: inline-block;
-        position: relative;
-        width: 75%%;
-        vertical-align: middle;
-        overflow: hidden;
+	display: grid;
+	position:relative;
+	left:25%%;
     }
     button, input, select, textarea {
-        font: inherit;
+	font: inherit;
+    }
+    svg {
+		max-height: 50%%;
     }
 </style>
 </head>
 <body class="container">
+<div class="form-center">
 <form class="form-container" action="" method="post">
-  <div>
+  <div class="form-center">
     <label for="name">Target Radius (meters):</label>
     <input type="number" name="targetRadius" id="name" value=%.1f step=0.1 required />
   </div>
-  <div>
-  <label for="weapon-select">Gun and Shell:</label>
+  <div class="form-center">
+  <label for="weapon-select">Platform and Ammo:</label>
   <select name="weapon" id="weapon-select">
-  <option value="cremari-he-0">Cremari with HE shell</option>
-  <option value="cremari-shrapnel-1">Cremari with Shrapnel shell</option>
-  <option value="cremari-incendiary-2">Cremari with Incendiary shell</option>
-  <option value="gunboat-he-3">Gunboat with HE shell</option>
-  <option value="gunboat-shrapnel-4">Gunboat with Shrapnel shell</option>
-  <option value="gunboat-incendiary-5">Gunboat with Incendiary shell</option>
-  <option value="huberlariat-120mm-6">Huber Lariat with 120mm shell</option>
-  <option value="koronides-120mm-7">Koronides with 120mm shell</option>
-  <option value="huberexalt-150mm-8">Huber Exalt with 150mm shell</option>
-  <option value="conqueror-120mm-9">Conqueror with 120mm shell</option>
-  <option value="blacksteele-120mm-10">Blacksteele with 120mm shell</option>
-  <option value="stormcannon-300mm-11">Storm Cannon with 300mm shell</option>
-  <option value="tempestcannon-300mm-12">Tempest Cannon with 300mm shell</option>
-  <option value="squire-explosive-13">Squire RAC with Explosive rocket</option>
-  <option value="skycaller-fire-14">Skycaller with Fire rocket</option>
+  <option value="">--- Mortar ---</option>
+  <option value="cremari-he-1">Cremari with HE shell</option>
+  <option value="cremari-shrapnel-2">Cremari with Shrapnel shell</option>
+  <option value="cremari-incendiary-3">Cremari with Incendiary shell</option>
+  <option value="gunboat-he-4">Gunboat with HE shell</option>
+  <option value="gunboat-shrapnel-5">Gunboat with Shrapnel shell</option>
+  <option value="gunboat-incendiary-6">Gunboat with Incendiary shell</option>
+  <option value="devittcaine-he-7">Devitt-Caine with HE shell</option>
+  <option value="devittcaine-shrapnel-8">Devitt-Caine with Shrapnel shell</option>
+  <option value="devittcaine-incendiary-9">Devitt-Caine with Incendiary shell</option>
+  <option value="peltast-he-10">Peltast with HE shell</option>
+  <option value="peltast-shrapnel-11">Peltast with Shrapnel shell</option>
+  <option value="peltast-incendiary-12">Peltast with Incendiary shell</option>
+
+  <option value="">--- 120mm ---</option>
+
+  <option value="trident-120mm-14">Trident with 120mm shell</option>
+  <option value="koronides-120mm-15">Koronides with 120mm shell</option>
+  <option value="huberlariat-120mm-16">Huber Lariat with 120mm shell</option>
+  <option value="conqueror-120mm-17">Conqueror with 120mm shell</option>
+  <option value="titan120-120mm-18">Titan with 120mm shell</option>
+  <option value="blacksteele-120mm-19">Blacksteele with 120mm shell</option>
+  <option value="callahan120-120mm-20">Callahan with 120mm shell</option>
+
+  <option value="">--- 150mm ---</option>
+
+  <option value="huberexalt-150mm-22">Huber Exalt with 150mm shell</option>
+  <option value="flood-150mm-23">Flood with 150mm shell</option>
+  <option value="sarissa-150mm-24">Sarissa with 150mm shell</option>
+  <option value="thunderbolt-150mm-25">Thunderbolt with 150mm shell</option>
+  <option value="titan150-150mm-26">Titan with 150mm shell</option>
+  <option value="callahan150-150mm-27">Callahan with 150mm shell</option>
+
+  <option value="">--- 300mm ---</option>
+
+  <option value="stormcannon-300mm-29">Storm Cannon with 300mm shell</option>
+  <option value="tempestcannon-300mm-30">Tempest Cannon with 300mm shell</option>
+
+  <option value="">--- HE Rocket ---</option>
+
+  <option value="squire-explosive-32">Squire with Explosive rocket</option>
+  <option value="hades-explosive-33">Hades with Explosive rocket</option>
+  <option value="retiarius-explosive-34">Retiarius with Explosive rocket</option>
+
+  <option value="">--- Fire Rocket ---</option>
+
+  <option value="skycaller-fire-36">Skycaller with Fire rocket</option>
+  <option value="deioneus-fire-37">Deioneus with Fire rocket</option>
+  <option value="waspnest-fire-38">Wasp Nest with Fire rocket</option>
   </select>
   </div>
-  <div>
+  <div class="form-center">
     <input type="submit" value="Plot chart" />
   </div>
 </form>
+</div>
 <div class=svg-container>
 %s
 </div>
@@ -202,26 +269,26 @@ document.getElementById("weapon-select").selectedIndex = %s
 </html>
 `
 
-func computeHits(targetRadius float64, weapon Weapon, shell Shell) string {
-	title := fmt.Sprintf("%s with %s on %.1fm target radius", weapon.name, shell.name, targetRadius)
+func computeHits(targetRadius float64, platform Platform, ammo Ammo) string {
+	title := fmt.Sprintf("%s with %s on %.1fm radius target", platform.name, ammo.name, targetRadius)
 	fmt.Println(title)
 
-	maxDispersionRadius := weapon.maxDispersionRadius
-	minDispersionRadius := weapon.minDispersionRadius
+	maxDispersionRadius := platform.maxDispersionRadius
+	minDispersionRadius := platform.minDispersionRadius
 	midDispersionRadius := minDispersionRadius + (maxDispersionRadius-minDispersionRadius)*0.5
 	_75percentDispersionRadius := minDispersionRadius + (maxDispersionRadius-minDispersionRadius)*0.75
 	_25percentDispersionRadius := minDispersionRadius + (maxDispersionRadius-minDispersionRadius)*0.25
 	fmt.Println("Min Dispertion Radius", minDispersionRadius)
 	fmt.Println("Mid Dispertion Radius", midDispersionRadius)
 	fmt.Println("Max Dispertion Radius", maxDispersionRadius)
-	minRange := weapon.minRange
-	maxRange := weapon.maxRange
+	minRange := platform.minRange
+	maxRange := platform.maxRange
 	midRange := minRange + (maxRange-minRange)*0.5
 	_25percentRange := minRange + (maxRange-minRange)*0.25
 	_75percentRange := minRange + (maxRange-minRange)*0.75
 
-	fullDamageRadius := shell.fullDamageRadius
-	partialDamageRadius := shell.partialDamageRadius
+	fullDamageRadius := ammo.fullDamageRadius
+	partialDamageRadius := ammo.partialDamageRadius
 
 	maxDispersionArea := math.Pi * maxDispersionRadius * maxDispersionRadius
 	_25percentDispersionArea := math.Pi * _25percentDispersionRadius * _25percentDispersionRadius
@@ -232,20 +299,20 @@ func computeHits(targetRadius float64, weapon Weapon, shell Shell) string {
 	fullArea := math.Pi * (targetRadius + fullDamageRadius) * (targetRadius + fullDamageRadius)
 	partialArea := (math.Pi * (targetRadius + partialDamageRadius) * (targetRadius + partialDamageRadius))
 
-	y_min_partial := MAX_Y_AXIS - RANGE_Y_AXIS*partialArea/minDispersionArea
-	y_min_full := MAX_Y_AXIS - RANGE_Y_AXIS*fullArea/minDispersionArea
+	yMinPartial := MaxYAxis - RangeYAxis*partialArea/minDispersionArea
+	yMinFull := MaxYAxis - RangeYAxis*fullArea/minDispersionArea
 
-	y_25pc_partial := MAX_Y_AXIS - RANGE_Y_AXIS*partialArea/_25percentDispersionArea
-	y_25pc_full := MAX_Y_AXIS - RANGE_Y_AXIS*fullArea/_25percentDispersionArea
+	y25pcPartial := MaxYAxis - RangeYAxis*partialArea/_25percentDispersionArea
+	y25pcFull := MaxYAxis - RangeYAxis*fullArea/_25percentDispersionArea
 
-	y_75pc_partial := MAX_Y_AXIS - RANGE_Y_AXIS*partialArea/_75percentDispersionArea
-	y_75pc_full := MAX_Y_AXIS - RANGE_Y_AXIS*fullArea/_75percentDispersionArea
+	y75pcPartial := MaxYAxis - RangeYAxis*partialArea/_75percentDispersionArea
+	y75pcFull := MaxYAxis - RangeYAxis*fullArea/_75percentDispersionArea
 
-	y_mid_partial := MAX_Y_AXIS - RANGE_Y_AXIS*partialArea/midDispersionArea
-	y_mid_full := MAX_Y_AXIS - RANGE_Y_AXIS*fullArea/midDispersionArea
+	yMidPartial := MaxYAxis - RangeYAxis*partialArea/midDispersionArea
+	yMidFull := MaxYAxis - RangeYAxis*fullArea/midDispersionArea
 
-	y_max_partial := MAX_Y_AXIS - RANGE_Y_AXIS*partialArea/maxDispersionArea
-	y_max_full := MAX_Y_AXIS - RANGE_Y_AXIS*fullArea/maxDispersionArea
+	yMaxPartial := MaxYAxis - RangeYAxis*partialArea/maxDispersionArea
+	yMaxFull := MaxYAxis - RangeYAxis*fullArea/maxDispersionArea
 
 	fmt.Println("Hit % at minRange:", math.Round(fullArea/minDispersionArea*100))
 	fmt.Println("Hit % at midRange:", math.Round(fullArea/midDispersionArea*100))
@@ -261,7 +328,7 @@ func computeHits(targetRadius float64, weapon Weapon, shell Shell) string {
 	_75percentRangeS := fmt.Sprintf("%.fm", _75percentRange)
 	maxRangeS := fmt.Sprintf("%.fm", maxRange)
 
-	out := fmt.Sprintf(SVG_TEMPLATE, int(y_min_partial), int(y_25pc_partial), int(y_mid_partial), int(y_75pc_partial), int(y_max_partial), int(y_min_partial), int(y_min_full), int(y_25pc_full), int(y_mid_full), int(y_75pc_full), int(y_max_full), int(y_min_full), minRangeS, _25percentRangeS, midRangeS, _75percentRangeS, maxRangeS, title)
+	out := fmt.Sprintf(SVGTemplate, int(yMinPartial), int(y25pcPartial), int(yMidPartial), int(y75pcPartial), int(yMaxPartial), int(yMinPartial), int(yMinFull), int(y25pcFull), int(yMidFull), int(y75pcFull), int(yMaxFull), int(yMinFull), minRangeS, _25percentRangeS, midRangeS, _75percentRangeS, maxRangeS, title)
 	fileHandler, _ := os.Create("out.svg")
 	fileHandler.Write([]byte(out))
 	fileHandler.Close()
@@ -271,16 +338,28 @@ func computeHits(targetRadius float64, weapon Weapon, shell Shell) string {
 func getArty(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		fmt.Printf("got /arty request\n")
-		io.WriteString(w, fmt.Sprintf(getTemplate, 0.0, "", "0"))
+		io.WriteString(w, fmt.Sprintf(HTMLTemplate, 0.0, "", "0"))
 	} else if r.Method == "POST" {
 		fmt.Printf("got POST /arty request\n")
-		weapon := r.PostFormValue("weapon")
-		weapons := strings.Split(weapon, "-")
 		targetRadius := r.PostFormValue("targetRadius")
 		radius, _ := strconv.ParseFloat(targetRadius, 64)
-		graph := computeHits(radius, Weapons[weapons[0]], Shells[weapons[1]])
+		weapon := r.PostFormValue("weapon")
+		weapons := strings.Split(weapon, "-")
+		var platform Platform
+		var ammo Ammo
+		var index string
+		if len(weapons) == 1 {
+			platform = Cremari
+			ammo = HEMortarShell
+			index = "1"
+		} else {
+			platform = Platforms[weapons[0]]
+			ammo = Ammos[weapons[1]]
+			index = weapons[2]
+		}
+		graph := computeHits(radius, platform, ammo)
 		fmt.Println(weapon)
-		io.WriteString(w, fmt.Sprintf(getTemplate, radius, graph, weapons[2]))
+		io.WriteString(w, fmt.Sprintf(HTMLTemplate, radius, graph, index))
 	}
 }
 
@@ -295,5 +374,4 @@ func main() {
 		fmt.Printf("error starting server: %s\n", err)
 		os.Exit(1)
 	}
-	return
 }
