@@ -11,6 +11,14 @@ import (
 	"strings"
 )
 
+type Function int64
+
+const (
+	Linear Function = 0
+	Exp    Function = 1
+	Log    Function = 2
+)
+
 type Platform struct {
 	minRange            float64
 	maxRange            float64
@@ -173,7 +181,7 @@ const HTMLTemplate = `
     .form-container {
 	display: grid;
 	justify-content: center;
-	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
 	font: 1.2em "Liberation Sans", sans-serif;
     }
     .form-center {
@@ -255,6 +263,14 @@ const HTMLTemplate = `
   </select>
   </div>
   <div class="form-center">
+  <label for="function-select">Function for Dispersion Radius</label>
+  <select name="function" id="function-select">
+  <option value="0">Linear</option>
+  <option value="1">Exponential</option>
+  <option value="2">Logarithmic</option>
+	<select/>
+  </div>
+  <div class="form-center">
     <input type="submit" value="Plot chart" />
   </div>
 </form>
@@ -264,28 +280,66 @@ const HTMLTemplate = `
 </div>
 <script type="text/javascript" >
 document.getElementById("weapon-select").selectedIndex = %s
+document.getElementById("function-select").selectedIndex = %s
 </script>
 </body>
 </html>
 `
 
-func computeHits(targetRadius float64, platform Platform, ammo Ammo) string {
+func computeDispersionRadius(minDispersionRadius, maxDispersionRadius, minRange, maxRange float64, function Function) (float64, float64, float64) {
+	var aCoeff float64
+	var bCoeff float64
+	var _25percentDispersionRadius float64
+	var midDispersionRadius float64
+	var _75percentDispersionRadius float64
+	midRange := minRange + (maxRange-minRange)*0.5
+	_25percentRange := minRange + (maxRange-minRange)*0.25
+	_75percentRange := minRange + (maxRange-minRange)*0.75
+	switch function {
+	case Linear: //  linear function => y = a.x + b
+		aCoeff = (maxDispersionRadius - minDispersionRadius) / (maxRange - minRange)
+		bCoeff = minDispersionRadius - (aCoeff * minRange)
+		_25percentDispersionRadius = aCoeff*_25percentRange + bCoeff
+		midDispersionRadius = aCoeff*midRange + bCoeff
+		_75percentDispersionRadius = aCoeff*_75percentRange + bCoeff
+	case Exp: // exp function => y = a.exp(x.b)
+		bCoeff = 1 / (minRange - maxRange) * math.Log(minDispersionRadius/maxDispersionRadius)
+		aCoeff = maxDispersionRadius / math.Exp(bCoeff*maxRange)
+		_25percentDispersionRadius = aCoeff * math.Exp(_25percentRange*bCoeff)
+		midDispersionRadius = aCoeff * math.Exp(midRange*bCoeff)
+		_75percentDispersionRadius = aCoeff * math.Exp(_75percentRange*bCoeff)
+	case Log: // log function => y = a.ln(x.b)
+		aCoeff = (minDispersionRadius - maxDispersionRadius) / (math.Log(minRange) - math.Log(maxRange))
+		bCoeff = math.Exp(minDispersionRadius/aCoeff) / minRange
+		_25percentDispersionRadius = aCoeff * math.Log(_25percentRange*bCoeff)
+		midDispersionRadius = aCoeff * math.Log(midRange*bCoeff)
+		_75percentDispersionRadius = aCoeff * math.Log(_75percentRange*bCoeff)
+
+	}
+
+	return _25percentDispersionRadius, midDispersionRadius, _75percentDispersionRadius
+}
+
+func computeHits(targetRadius float64, platform Platform, ammo Ammo, function Function) string {
 	title := fmt.Sprintf("%s with %s on %.1fm radius target", platform.name, ammo.name, targetRadius)
 	fmt.Println(title)
 
-	maxDispersionRadius := platform.maxDispersionRadius
-	minDispersionRadius := platform.minDispersionRadius
-	midDispersionRadius := minDispersionRadius + (maxDispersionRadius-minDispersionRadius)*0.5
-	_75percentDispersionRadius := minDispersionRadius + (maxDispersionRadius-minDispersionRadius)*0.75
-	_25percentDispersionRadius := minDispersionRadius + (maxDispersionRadius-minDispersionRadius)*0.25
-	fmt.Println("Min Dispertion Radius", minDispersionRadius)
-	fmt.Println("Mid Dispertion Radius", midDispersionRadius)
-	fmt.Println("Max Dispertion Radius", maxDispersionRadius)
 	minRange := platform.minRange
 	maxRange := platform.maxRange
 	midRange := minRange + (maxRange-minRange)*0.5
 	_25percentRange := minRange + (maxRange-minRange)*0.25
 	_75percentRange := minRange + (maxRange-minRange)*0.75
+
+	maxDispersionRadius := platform.maxDispersionRadius
+	minDispersionRadius := platform.minDispersionRadius
+
+	_25percentDispersionRadius, midDispersionRadius, _75percentDispersionRadius := computeDispersionRadius(minDispersionRadius, maxDispersionRadius, minRange, maxRange, function)
+
+	fmt.Println("Min Dispertion Radius", minDispersionRadius)
+	fmt.Println("25pc Dispertion Radius", _25percentDispersionRadius)
+	fmt.Println("Mid Dispertion Radius", midDispersionRadius)
+	fmt.Println("75pc Dispertion Radius", _75percentDispersionRadius)
+	fmt.Println("Max Dispertion Radius", maxDispersionRadius)
 
 	fullDamageRadius := ammo.fullDamageRadius
 	partialDamageRadius := ammo.partialDamageRadius
@@ -343,6 +397,9 @@ func getArty(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("got POST /arty request\n")
 		targetRadius := r.PostFormValue("targetRadius")
 		radius, _ := strconv.ParseFloat(targetRadius, 64)
+		function := r.PostFormValue("function")
+		functionIndex, _ := strconv.ParseInt(function, 10, 64)
+
 		weapon := r.PostFormValue("weapon")
 		weapons := strings.Split(weapon, "-")
 		var platform Platform
@@ -357,9 +414,9 @@ func getArty(w http.ResponseWriter, r *http.Request) {
 			ammo = Ammos[weapons[1]]
 			index = weapons[2]
 		}
-		graph := computeHits(radius, platform, ammo)
+		graph := computeHits(radius, platform, ammo, Function(functionIndex))
 		fmt.Println(weapon)
-		io.WriteString(w, fmt.Sprintf(HTMLTemplate, radius, graph, index))
+		io.WriteString(w, fmt.Sprintf(HTMLTemplate, radius, graph, index, function))
 	}
 }
 
