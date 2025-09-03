@@ -296,21 +296,24 @@ func computeDispersionRadius(minDispersionRadius, maxDispersionRadius, minRange,
 	_25percentRange := minRange + (maxRange-minRange)*0.25
 	_75percentRange := minRange + (maxRange-minRange)*0.75
 	switch function {
-	case Linear: //  linear function => y = a.x + b
+	case Linear: // linear function => y = a.x + b
 		aCoeff = (maxDispersionRadius - minDispersionRadius) / (maxRange - minRange)
 		bCoeff = minDispersionRadius - (aCoeff * minRange)
+		fmt.Printf("Dispersion function: y = %f*x + %f\n", aCoeff, bCoeff)
 		_25percentDispersionRadius = aCoeff*_25percentRange + bCoeff
 		midDispersionRadius = aCoeff*midRange + bCoeff
 		_75percentDispersionRadius = aCoeff*_75percentRange + bCoeff
 	case Exp: // exp function => y = a.exp(x.b)
 		bCoeff = 1 / (minRange - maxRange) * math.Log(minDispersionRadius/maxDispersionRadius)
 		aCoeff = maxDispersionRadius / math.Exp(bCoeff*maxRange)
+		fmt.Printf("Dispersion function: y = %f*exp(x*%f)\n", aCoeff, bCoeff)
 		_25percentDispersionRadius = aCoeff * math.Exp(_25percentRange*bCoeff)
 		midDispersionRadius = aCoeff * math.Exp(midRange*bCoeff)
 		_75percentDispersionRadius = aCoeff * math.Exp(_75percentRange*bCoeff)
 	case Log: // log function => y = a.ln(x.b)
 		aCoeff = (minDispersionRadius - maxDispersionRadius) / (math.Log(minRange) - math.Log(maxRange))
 		bCoeff = math.Exp(minDispersionRadius/aCoeff) / minRange
+		fmt.Printf("Dispersion function: y = %f*ln(x*%f)\n", aCoeff, bCoeff)
 		_25percentDispersionRadius = aCoeff * math.Log(_25percentRange*bCoeff)
 		midDispersionRadius = aCoeff * math.Log(midRange*bCoeff)
 		_75percentDispersionRadius = aCoeff * math.Log(_75percentRange*bCoeff)
