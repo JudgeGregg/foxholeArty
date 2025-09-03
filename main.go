@@ -335,11 +335,11 @@ func computeHits(targetRadius float64, platform Platform, ammo Ammo, function Fu
 
 	_25percentDispersionRadius, midDispersionRadius, _75percentDispersionRadius := computeDispersionRadius(minDispersionRadius, maxDispersionRadius, minRange, maxRange, function)
 
-	fmt.Println("Min Dispertion Radius", minDispersionRadius)
-	fmt.Println("25pc Dispertion Radius", _25percentDispersionRadius)
-	fmt.Println("Mid Dispertion Radius", midDispersionRadius)
-	fmt.Println("75pc Dispertion Radius", _75percentDispersionRadius)
-	fmt.Println("Max Dispertion Radius", maxDispersionRadius)
+	fmt.Println("Min Dispersion Radius", minDispersionRadius)
+	fmt.Println("25pc Dispersion Radius", _25percentDispersionRadius)
+	fmt.Println("Mid Dispersion Radius", midDispersionRadius)
+	fmt.Println("75pc Dispersion Radius", _75percentDispersionRadius)
+	fmt.Println("Max Dispersion Radius", maxDispersionRadius)
 
 	fullDamageRadius := ammo.fullDamageRadius
 	partialDamageRadius := ammo.partialDamageRadius
