@@ -327,6 +327,8 @@ func computeHits(targetRadius float64, platform Platform, ammo Ammo, function Fu
 	title := fmt.Sprintf("%s with %s on %.1fm radius target", platform.name, ammo.name, targetRadius)
 	fmt.Println(title)
 
+	var _25percentDispersionRadius, midDispersionRadius, _75percentDispersionRadius float64
+
 	minRange := platform.minRange
 	maxRange := platform.maxRange
 	midRange := minRange + (maxRange-minRange)*0.5
@@ -336,7 +338,11 @@ func computeHits(targetRadius float64, platform Platform, ammo Ammo, function Fu
 	maxDispersionRadius := platform.maxDispersionRadius
 	minDispersionRadius := platform.minDispersionRadius
 
-	_25percentDispersionRadius, midDispersionRadius, _75percentDispersionRadius := computeDispersionRadius(minDispersionRadius, maxDispersionRadius, minRange, maxRange, function)
+	if platform == StormCannon || platform == TempestCannon {
+		_25percentDispersionRadius, midDispersionRadius, _75percentDispersionRadius = 50.0, 50.0, 50.0
+	} else {
+		_25percentDispersionRadius, midDispersionRadius, _75percentDispersionRadius = computeDispersionRadius(minDispersionRadius, maxDispersionRadius, minRange, maxRange, function)
+	}
 
 	fmt.Println("Min Dispersion Radius", minDispersionRadius)
 	fmt.Println("25pc Dispersion Radius", _25percentDispersionRadius)
