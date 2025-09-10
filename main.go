@@ -385,11 +385,11 @@ func computeHits(targetRadius float64, platform Platform, ammo Ammo, function Fu
 	fmt.Println("Partial Hit % at midRange:", math.Round(partialArea/midDispersionArea*100))
 	fmt.Println("Partial Hit % at maxRange:", math.Round(partialArea/maxDispersionArea*100))
 
-	minRangeS := fmt.Sprintf("%.fm", minRange)
-	_25percentRangeS := fmt.Sprintf("%.fm", _25percentRange)
-	midRangeS := fmt.Sprintf("%.fm", midRange)
-	_75percentRangeS := fmt.Sprintf("%.fm", _75percentRange)
-	maxRangeS := fmt.Sprintf("%.fm", maxRange)
+	minRangeS := fmt.Sprintf("%.2fm", minRange)
+	_25percentRangeS := fmt.Sprintf("%.2fm", _25percentRange)
+	midRangeS := fmt.Sprintf("%.2fm", midRange)
+	_75percentRangeS := fmt.Sprintf("%.2fm", _75percentRange)
+	maxRangeS := fmt.Sprintf("%.2fm", maxRange)
 
 	out := fmt.Sprintf(SVGTemplate, int(yMinPartial), int(y25pcPartial), int(yMidPartial), int(y75pcPartial), int(yMaxPartial), int(yMinPartial), int(yMinFull), int(y25pcFull), int(yMidFull), int(y75pcFull), int(yMaxFull), int(yMinFull), minRangeS, _25percentRangeS, midRangeS, _75percentRangeS, maxRangeS, title)
 	fileHandler, _ := os.Create("out.svg")
