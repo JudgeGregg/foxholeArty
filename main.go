@@ -125,9 +125,9 @@ const SVGTemplate = `<svg viewBox="0 0 32000 22000" version="1.1" xmlns="http://
 
  <path fill="rgb(255,134,134)" stroke="none" d="M 0,0 L 30000,0 30000,20000 0,20000 0,0 Z "/>
 
- <path fill="rgb(254,254,123)" stroke="none" d="M 0,%d L 7500,%d 15000,%d 22500,%d 30000,%d 30000,20000 0,20000 0,%d Z "/>
+ <path fill="rgb(254,254,123)" stroke="none" d="M 0,%d L 3750,%d 7500,%d 11250,%d 15000,%d 18750,%d 22500,%d 26250,%d 30000,%d 30000,20000 0,20000 0,%d Z "/>
 
- <path fill="rgb(19,174,0)" stroke="none" d="M 0,%d L 7500,%d 15000,%d 22500,%d, 30000,%d 30000,20000 0,20000 0,%d Z "/>
+ <path fill="rgb(19,174,0)" stroke="none" d="M 0,%d L 3750,%d 7500,%d 11250,%d 15000,%d 18750,%d 22500,%d, 26250,%d 30000,%d 30000,20000 0,20000 0,%d Z "/>
 
  <text class="SVGTextShape"><tspan class="TextParagraph"><tspan class="TextPosition" x="0" y="20549"><tspan font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400" fill="rgb(0,0,0)" stroke="none" style="white-space: pre">%s</tspan></tspan></tspan></text>
  <text class="SVGTextShape"><tspan class="TextParagraph"><tspan class="TextPosition" x="7500" y="20549"><tspan font-family="Liberation Sans, sans-serif" font-size="353px" font-weight="400" fill="rgb(0,0,0)" stroke="none" style="white-space: pre">%s</tspan></tspan></tspan></text>
@@ -286,48 +286,73 @@ document.getElementById("function-select").selectedIndex = %s
 </html>
 `
 
-func computeDispersionRadius(minDispersionRadius, maxDispersionRadius, minRange, maxRange float64, function Function) (float64, float64, float64) {
+func computeDispersionRadius(minDispersionRadius, maxDispersionRadius, minRange, maxRange float64, function Function) (float64, float64, float64, float64, float64, float64, float64) {
 	var aCoeff float64
 	var bCoeff float64
+	var _12percentDispersionRadius float64
 	var _25percentDispersionRadius float64
+	var _37percentDispersionRadius float64
 	var midDispersionRadius float64
+	var _62percentDispersionRadius float64
 	var _75percentDispersionRadius float64
-	midRange := minRange + (maxRange-minRange)*0.5
+	var _87percentDispersionRadius float64
+	_12percentRange := minRange + (maxRange-minRange)*0.125
 	_25percentRange := minRange + (maxRange-minRange)*0.25
+	_37percentRange := minRange + (maxRange-minRange)*0.375
+	midRange := minRange + (maxRange-minRange)*0.5
+	_62percentRange := minRange + (maxRange-minRange)*0.625
 	_75percentRange := minRange + (maxRange-minRange)*0.75
+	_87percentRange := minRange + (maxRange-minRange)*0.875
 	switch function {
 	case Linear: // linear function => y = a.x + b
 		aCoeff = (maxDispersionRadius - minDispersionRadius) / (maxRange - minRange)
 		bCoeff = minDispersionRadius - (aCoeff * minRange)
 		fmt.Printf("Dispersion function: y = %f*x + %f\n", aCoeff, bCoeff)
+
+		_12percentDispersionRadius = aCoeff*_12percentRange + bCoeff
 		_25percentDispersionRadius = aCoeff*_25percentRange + bCoeff
+		_37percentDispersionRadius = aCoeff*_37percentRange + bCoeff
 		midDispersionRadius = aCoeff*midRange + bCoeff
+		_62percentDispersionRadius = aCoeff*_62percentRange + bCoeff
 		_75percentDispersionRadius = aCoeff*_75percentRange + bCoeff
+		_87percentDispersionRadius = aCoeff*_87percentRange + bCoeff
+
 	case Exp: // exp function => y = a.exp(x.b)
 		bCoeff = 1 / (minRange - maxRange) * math.Log(minDispersionRadius/maxDispersionRadius)
 		aCoeff = maxDispersionRadius / math.Exp(bCoeff*maxRange)
 		fmt.Printf("Dispersion function: y = %f*exp(x*%f)\n", aCoeff, bCoeff)
+
+		_12percentDispersionRadius = aCoeff * math.Exp(_12percentRange*bCoeff)
 		_25percentDispersionRadius = aCoeff * math.Exp(_25percentRange*bCoeff)
+		_37percentDispersionRadius = aCoeff * math.Exp(_37percentRange*bCoeff)
 		midDispersionRadius = aCoeff * math.Exp(midRange*bCoeff)
+		_62percentDispersionRadius = aCoeff * math.Exp(_62percentRange*bCoeff)
 		_75percentDispersionRadius = aCoeff * math.Exp(_75percentRange*bCoeff)
+		_87percentDispersionRadius = aCoeff * math.Exp(_87percentRange*bCoeff)
+
 	case Log: // log function => y = a.ln(x.b)
 		aCoeff = (minDispersionRadius - maxDispersionRadius) / (math.Log(minRange) - math.Log(maxRange))
 		bCoeff = math.Exp(minDispersionRadius/aCoeff) / minRange
 		fmt.Printf("Dispersion function: y = %f*ln(x*%f)\n", aCoeff, bCoeff)
+
+		_12percentDispersionRadius = aCoeff * math.Log(_12percentRange*bCoeff)
 		_25percentDispersionRadius = aCoeff * math.Log(_25percentRange*bCoeff)
+		_37percentDispersionRadius = aCoeff * math.Log(_37percentRange*bCoeff)
 		midDispersionRadius = aCoeff * math.Log(midRange*bCoeff)
+		_62percentDispersionRadius = aCoeff * math.Log(_62percentRange*bCoeff)
 		_75percentDispersionRadius = aCoeff * math.Log(_75percentRange*bCoeff)
+		_87percentDispersionRadius = aCoeff * math.Log(_87percentRange*bCoeff)
 
 	}
 
-	return _25percentDispersionRadius, midDispersionRadius, _75percentDispersionRadius
+	return _12percentDispersionRadius, _25percentDispersionRadius, _37percentDispersionRadius, midDispersionRadius, _62percentDispersionRadius, _75percentDispersionRadius, _87percentDispersionRadius
 }
 
 func computeHits(targetRadius float64, platform Platform, ammo Ammo, function Function) string {
 	title := fmt.Sprintf("%s with %s on %.1fm radius target", platform.name, ammo.name, targetRadius)
 	fmt.Println(title)
 
-	var _25percentDispersionRadius, midDispersionRadius, _75percentDispersionRadius float64
+	var _12percentDispersionRadius, _25percentDispersionRadius, _37percentDispersionRadius, midDispersionRadius, _62percentDispersionRadius, _75percentDispersionRadius, _87percentDispersionRadius float64
 
 	minRange := platform.minRange
 	maxRange := platform.maxRange
@@ -339,25 +364,33 @@ func computeHits(targetRadius float64, platform Platform, ammo Ammo, function Fu
 	minDispersionRadius := platform.minDispersionRadius
 
 	if platform == StormCannon || platform == TempestCannon {
-		_25percentDispersionRadius, midDispersionRadius, _75percentDispersionRadius = 50.0, 50.0, 50.0
+		_12percentDispersionRadius, _25percentDispersionRadius, _37percentDispersionRadius, midDispersionRadius, _62percentDispersionRadius, _75percentDispersionRadius, _87percentDispersionRadius = 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0
 	} else {
-		_25percentDispersionRadius, midDispersionRadius, _75percentDispersionRadius = computeDispersionRadius(minDispersionRadius, maxDispersionRadius, minRange, maxRange, function)
+		_12percentDispersionRadius, _25percentDispersionRadius, _37percentDispersionRadius, midDispersionRadius, _62percentDispersionRadius, _75percentDispersionRadius, _87percentDispersionRadius = computeDispersionRadius(minDispersionRadius, maxDispersionRadius, minRange, maxRange, function)
 	}
 
 	fmt.Println("Min Dispersion Radius", minDispersionRadius)
+	fmt.Println("12pc Dispersion Radius", _12percentDispersionRadius)
 	fmt.Println("25pc Dispersion Radius", _25percentDispersionRadius)
+	fmt.Println("37pc Dispersion Radius", _37percentDispersionRadius)
 	fmt.Println("Mid Dispersion Radius", midDispersionRadius)
+	fmt.Println("62pc Dispersion Radius", _62percentDispersionRadius)
 	fmt.Println("75pc Dispersion Radius", _75percentDispersionRadius)
+	fmt.Println("87pc Dispersion Radius", _87percentDispersionRadius)
 	fmt.Println("Max Dispersion Radius", maxDispersionRadius)
 
 	fullDamageRadius := ammo.fullDamageRadius
 	partialDamageRadius := ammo.partialDamageRadius
 
-	maxDispersionArea := math.Pi * maxDispersionRadius * maxDispersionRadius
-	_25percentDispersionArea := math.Pi * _25percentDispersionRadius * _25percentDispersionRadius
-	midDispersionArea := math.Pi * midDispersionRadius * midDispersionRadius
-	_75percentDispersionArea := math.Pi * _75percentDispersionRadius * _75percentDispersionRadius
 	minDispersionArea := math.Pi * minDispersionRadius * minDispersionRadius
+	_12percentDispersionArea := math.Pi * _12percentDispersionRadius * _12percentDispersionRadius
+	_25percentDispersionArea := math.Pi * _25percentDispersionRadius * _25percentDispersionRadius
+	_37percentDispersionArea := math.Pi * _37percentDispersionRadius * _37percentDispersionRadius
+	midDispersionArea := math.Pi * midDispersionRadius * midDispersionRadius
+	_62percentDispersionArea := math.Pi * _62percentDispersionRadius * _62percentDispersionRadius
+	_75percentDispersionArea := math.Pi * _75percentDispersionRadius * _75percentDispersionRadius
+	_87percentDispersionArea := math.Pi * _87percentDispersionRadius * _87percentDispersionRadius
+	maxDispersionArea := math.Pi * maxDispersionRadius * maxDispersionRadius
 
 	fullArea := math.Pi * (targetRadius + fullDamageRadius) * (targetRadius + fullDamageRadius)
 	partialArea := (math.Pi * (targetRadius + partialDamageRadius) * (targetRadius + partialDamageRadius))
@@ -365,14 +398,26 @@ func computeHits(targetRadius float64, platform Platform, ammo Ammo, function Fu
 	yMinPartial := MaxYAxis - RangeYAxis*partialArea/minDispersionArea
 	yMinFull := MaxYAxis - RangeYAxis*fullArea/minDispersionArea
 
+	y12pcPartial := MaxYAxis - RangeYAxis*partialArea/_12percentDispersionArea
+	y12pcFull := MaxYAxis - RangeYAxis*fullArea/_12percentDispersionArea
+
 	y25pcPartial := MaxYAxis - RangeYAxis*partialArea/_25percentDispersionArea
 	y25pcFull := MaxYAxis - RangeYAxis*fullArea/_25percentDispersionArea
+
+	y37pcPartial := MaxYAxis - RangeYAxis*partialArea/_37percentDispersionArea
+	y37pcFull := MaxYAxis - RangeYAxis*fullArea/_37percentDispersionArea
+
+	yMidPartial := MaxYAxis - RangeYAxis*partialArea/midDispersionArea
+	yMidFull := MaxYAxis - RangeYAxis*fullArea/midDispersionArea
+
+	y62pcPartial := MaxYAxis - RangeYAxis*partialArea/_62percentDispersionArea
+	y62pcFull := MaxYAxis - RangeYAxis*fullArea/_62percentDispersionArea
 
 	y75pcPartial := MaxYAxis - RangeYAxis*partialArea/_75percentDispersionArea
 	y75pcFull := MaxYAxis - RangeYAxis*fullArea/_75percentDispersionArea
 
-	yMidPartial := MaxYAxis - RangeYAxis*partialArea/midDispersionArea
-	yMidFull := MaxYAxis - RangeYAxis*fullArea/midDispersionArea
+	y87pcPartial := MaxYAxis - RangeYAxis*partialArea/_87percentDispersionArea
+	y87pcFull := MaxYAxis - RangeYAxis*fullArea/_87percentDispersionArea
 
 	yMaxPartial := MaxYAxis - RangeYAxis*partialArea/maxDispersionArea
 	yMaxFull := MaxYAxis - RangeYAxis*fullArea/maxDispersionArea
@@ -391,7 +436,8 @@ func computeHits(targetRadius float64, platform Platform, ammo Ammo, function Fu
 	_75percentRangeS := fmt.Sprintf("%.2fm", _75percentRange)
 	maxRangeS := fmt.Sprintf("%.2fm", maxRange)
 
-	out := fmt.Sprintf(SVGTemplate, int(yMinPartial), int(y25pcPartial), int(yMidPartial), int(y75pcPartial), int(yMaxPartial), int(yMinPartial), int(yMinFull), int(y25pcFull), int(yMidFull), int(y75pcFull), int(yMaxFull), int(yMinFull), minRangeS, _25percentRangeS, midRangeS, _75percentRangeS, maxRangeS, title)
+	out := fmt.Sprintf(
+		SVGTemplate, int(yMinPartial), int(y12pcPartial), int(y25pcPartial), int(y37pcPartial), int(yMidPartial), int(y62pcPartial), int(y75pcPartial), int(y87pcPartial), int(yMaxPartial), int(yMinPartial), int(yMinFull), int(y12pcFull), int(y25pcFull), int(y37pcFull), int(yMidFull), int(y62pcFull), int(y75pcFull), int(y87pcFull), int(yMaxFull), int(yMinFull), minRangeS, _25percentRangeS, midRangeS, _75percentRangeS, maxRangeS, title)
 	fileHandler, _ := os.Create("out.svg")
 	fileHandler.Write([]byte(out))
 	fileHandler.Close()
@@ -401,7 +447,7 @@ func computeHits(targetRadius float64, platform Platform, ammo Ammo, function Fu
 func getArty(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		fmt.Printf("got /arty request\n")
-		io.WriteString(w, fmt.Sprintf(HTMLTemplate, 0.0, "", "0"))
+		io.WriteString(w, fmt.Sprintf(HTMLTemplate, 0.0, "", "0", "0"))
 	} else if r.Method == "POST" {
 		fmt.Printf("got POST /arty request\n")
 		targetRadius := r.PostFormValue("targetRadius")
